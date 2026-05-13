@@ -102,4 +102,24 @@ else:
         res_col1, res_col2 = st.columns(2)
         
         with res_col1:
-            st.metric(
+            st.metric(label="내 점수", value=f"{score} / {total} 점")
+            if score == total:
+                st.balloons()
+                st.success("🎉 만점입니다! 수업을 정말 열심히 들으셨네요!")
+            elif score >= 3:
+                st.warning("🙂 훌륭합니다. 복습만 조금 더 하면 완벽하겠어요.")
+            else:
+                st.error("😭 수업 자료를 다시 한번 확인해 보시는 게 좋겠습니다.")
+                
+            if st.button("다시 풀기"):
+                print(">> [서버 로그] 사용자가 '다시 풀기' 버튼을 클릭했습니다.")
+                st.session_state['quiz_submitted'] = False
+                st.rerun()
+                
+        with res_col2:
+            st.write("**[ 내 점수 vs 전체 평균 ]**")
+            chart_data = pd.DataFrame({
+                "점수": [score, 2.5], 
+                "비교": ["내 점수", "수강생 평균(가정)"]
+            }).set_index("비교")
+            st.bar_chart(chart_data)
